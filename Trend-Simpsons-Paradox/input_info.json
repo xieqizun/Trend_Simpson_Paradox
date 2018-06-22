@@ -1,0 +1,11 @@
+{
+	"num_of_bins": 20,
+	"least_num_of_datapoints_in_each_bin": 50,
+	"mode": 1,
+	"target_variable": "meanV",
+	"target_variable_column": 46,
+	"level_of_significance": 0.05,
+	"csv_file_name": "Tract_Data_reduced",
+	"ignore_columns": ["Id2","TRACT","meanA","meanD","meanN","meanP"],
+	"log_scales": {}
+}
