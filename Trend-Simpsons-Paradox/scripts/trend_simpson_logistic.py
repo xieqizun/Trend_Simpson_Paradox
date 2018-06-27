@@ -56,7 +56,7 @@ def read_the_bining_file(file_name):
 
 def different_vals_of(var):
     if var in possible_values_df:
-        arr = possible_values_df[var]
+        arr = list(possible_values_df[var])
         arr[0] = arr[0] - 1
         return list(arr)
     return None
@@ -163,7 +163,7 @@ def draw(trend_simpsons_pair, aggregated_vars_params, disaggregated_vars_params,
         plt.xlabel(var)
         plt.ylabel(target_variable)
 
-        if log_scales[var]:
+        if var in log_scales:
             plt.xscale('log')
 
         plt.legend(loc='best')
@@ -200,7 +200,7 @@ def draw(trend_simpsons_pair, aggregated_vars_params, disaggregated_vars_params,
             coefs_ind += 1
 
         plt.xlabel(var)
-        if log_scales[var]:
+        if var in log_scales:
             plt.xscale('log')
         
         plt.ylabel(target_variable)
@@ -231,30 +231,31 @@ def draw(trend_simpsons_pair, aggregated_vars_params, disaggregated_vars_params,
         plt.clf()
         fig, ax = plt.subplots(ncols=2, sharex=True, sharey=True)#, gridspec_kw={'width_ratios':[1,1,1.25]})
 
+
         cmap1 = cm.bwr
         cmap1.set_bad('lightgray', 1.)
-        im = ax[0].pcolormesh(np.array([possible_values[1:]] * (len(conditioning_groups) - 1)), np.array([conditioning_groups[1:]] * (len(possible_values) - 1)).T, mat_mean,
+        im = ax[0].pcolormesh(np.array([possible_values[:]] * (len(conditioning_groups) )), np.array([conditioning_groups[:]] * (len(possible_values) )).T, mat_mean,
 	                            vmin=mat_mean.min() - 0.01,
 	                            vmax=mat_mean.max() + 0.01,
 	                            cmap = cmap1)
 
         fig.colorbar(im, ax=ax[0])
-        if log_scales[var]:
+        if var in log_scales:
             ax[0].set_xscale('log')
-        if log_scales[cond]:
+        if cond in log_scales:
             ax[0].set_yscale('log')
 
         cmap2 = cm.YlGn
         cmap2.set_bad('lightgray', 1.)
-        im = ax[1].pcolormesh(np.array([possible_values[1:]] * (len(conditioning_groups) - 1)), np.array([conditioning_groups[1:]] * (len(possible_values) - 1)).T, mat_freq,
+        im = ax[1].pcolormesh(np.array([possible_values[:]] * (len(conditioning_groups) )), np.array([conditioning_groups[:]] * (len(possible_values))).T, mat_freq,
 	                            norm=clrs.LogNorm(vmin=1, vmax=mat_freq.max()),
 	                            cmap = cmap2)
 
         fig.colorbar(im, ax=ax[1])
-        if log_scales[var]:
+        if var in log_scales:
             ax[0].set_xscale('log')
             ax[1].set_xscale('log')
-        if log_scales[cond]:
+        if cond in log_scales:
             ax[1].set_yscale('log')
 
         fig.add_subplot(111, frameon=False)
@@ -319,8 +320,8 @@ def logistic_regression(X, Y):
             return [-20, 0], [0, 1], 0 # 
 
     logistic_model = sm.Logit(Y,X)
-    print X
-    print Y
+    # print X
+    # print Y
     try:
         lr = logistic_model.fit(maxiter=200, disp=False) 
     except: # Singular Matrix
@@ -558,15 +559,15 @@ if __name__ == "__main__":
     print trend_simpsons_pairs
 
     # Finding finalized pairs based on Deviace chi-squared measure
-#     deviance_all_pairs(trend_simpsons_pairs, aggregated_vars_params, disaggregated_vars_params)
-#     finalized_pairs = chi_sq_deviance()
-#     print "Number of all finalized pairs: ", len(finalized_pairs)
-#     print finalized_pairs
+    deviance_all_pairs(trend_simpsons_pairs, aggregated_vars_params, disaggregated_vars_params)
+    finalized_pairs = chi_sq_deviance()
+    print "Number of all finalized pairs: ", len(finalized_pairs)
+    print finalized_pairs
 
-#     # Ranking for pairs 
-#     deviance_ranking = ranking_deviance(finalized_pairs)
-#     show_deviance_ranking(finalized_pairs, deviance_ranking)
+    # Ranking for pairs 
+    deviance_ranking = ranking_deviance(finalized_pairs)
+    show_deviance_ranking(finalized_pairs, deviance_ranking)
     
-#     # Drawing charts for finalized pairs
-#     draw(finalized_pairs, aggregated_vars_params, disaggregated_vars_params, log_scales)
+    # Drawing charts for finalized pairs
+    draw(finalized_pairs, aggregated_vars_params, disaggregated_vars_params, log_scales)
 
